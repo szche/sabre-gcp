@@ -2,14 +2,26 @@ provider "google" {
   project = "testsabregcp"
 }
 
+
 # Create a bucket to store PDF files
 resource "google_storage_bucket" "static" {
  name          = "chadam-sabre-gcp-bucket"
  location      = "US"
  storage_class = "STANDARD"
-
- uniform_bucket_level_access = true
+ force_destroy = "true" 
+ uniform_bucket_level_access = false 
 }
+
+
+# Make bucket public
+resource "google_storage_bucket_iam_member" "member" {
+  provider = google
+  bucket   = google_storage_bucket.static.name
+  role     = "roles/storage.objectViewer"
+  member   = "allUsers"
+}
+
+
 
 # Create a SQL database instance
 resource "google_sql_database_instance" "default" {
@@ -85,3 +97,12 @@ trigger_http = "true"
   ]
 }
 
+# IAM entry for all users to invoke the function
+resource "google_cloudfunctions_function_iam_member" "invoker" {
+  project        = google_cloudfunctions_function.Cloud_function.project
+  region         = google_cloudfunctions_function.Cloud_function.region
+  cloud_function = google_cloudfunctions_function.Cloud_function.name
+
+  role   = "roles/cloudfunctions.invoker"
+  member = "allUsers"
+}

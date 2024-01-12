@@ -54,13 +54,13 @@ def writeToSql(request):
              month = request_json["month"]
              stmt = sqlalchemy.text(f"SELECT SUM(hours) FROM info WHERE MONTH(date) = {month}")
              data = str(conn.execute(stmt).fetchall()[0][0])
-             print(data)
              upload_blob("chadam-sabre-gcp-bucket", data, f"invoice-{month}.html")
-             print(data)
+             return f"https://storage.googleapis.com/chadam-sabre-gcp-bucket/invoice-{month}.html"
    except Exception as e:
       print ("Some exception occured" + str(e))
       return 'Error: {}'.format(str(e))
    return 'ok'
+
 
 
 
