@@ -9,3 +9,20 @@
     "action": "invoice",
     "month": "1"
 }
+
+
+curl -m 70 -X POST https://us-central1-testsabregcp.cloudfunctions.net/sabre-gcp-cloud-function \
+-H "Content-Type: application/json" \
+-d '{
+    "action": "save",
+    "date": "2023-01-14",
+    "hours": 6
+}'
+
+
+curl -m 70 -X POST https://us-central1-testsabregcp.cloudfunctions.net/sabre-gcp-cloud-function \
+-H "Content-Type: application/json" \
+-d '{
+    "action": "invoice",
+    "month": "1"
+}'
