@@ -1,16 +1,15 @@
 import sqlalchemy
 from google.cloud import storage
 import datetime
+import urllib.request
 
 
-connection_name = "testsabregcp:us-central1:chadam-db-sql-mysql"
 
 #database name
 db_name = "sabre"
 db_user = "root"
 db_password = "password"
 driver_name = 'mysql+pymysql'
-query_string = dict({"unix_socket": "/cloudsql/{}".format(connection_name)})
 
 creator = sqlalchemy.text("CREATE TABLE IF NOT EXISTS info (id INT NOT NULL AUTO_INCREMENT, date DATE, hours INT, PRIMARY KEY (id));")
 
@@ -23,11 +22,20 @@ def upload_blob(bucket_name, blob_text, destination_blob_name):
     blob.upload_from_string(html, content_type="text/html")
 
 
+def getProjectID():
+    url = "http://metadata.google.internal/computeMetadata/v1/project/project-id"
+    req = urllib.request.Request(url)
+    req.add_header("Metadata-Flavor", "Google")
+    project_id = urllib.request.urlopen(req).read().decode()
+    return project_id
 
 def writeToSql(request):
    request_json = request.get_json(silent=True)
    action = request_json["action"]
 
+   connection_name = getProjectID()+":us-central1:chadam-db-sql-mysql"
+   print(connection_name)
+   query_string = dict({"unix_socket": "/cloudsql/{}".format(connection_name)})
    db = sqlalchemy.create_engine(
    sqlalchemy.engine.url.URL(
    drivername=driver_name,
