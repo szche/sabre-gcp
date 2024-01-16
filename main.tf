@@ -1,11 +1,11 @@
 provider "google" {
-  project = "testsabregcp4"
+  project = "testsabregcp"
 }
 
 
 # Create a bucket to store PDF files
 resource "google_storage_bucket" "static" {
- name          = "chadam-sabre-gcp-bucket-2"
+ name          = "chadam-sabre-gcp-bucket"
  location      = "US"
  storage_class = "STANDARD"
  force_destroy = "true" 
@@ -57,7 +57,7 @@ resource "google_sql_user" "users" {
 
 # Create bucket to store cloud function code 
 resource "google_storage_bucket" "cloud-function-bucket" {
- name          = "chadam-sabre-cloudcuntion-bucket-2"
+ name          = "chadam-sabre-cloudcuntion-bucket"
  location      = "US"
  storage_class = "STANDARD"
  uniform_bucket_level_access = true
