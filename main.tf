@@ -22,7 +22,6 @@ resource "google_storage_bucket_iam_member" "member" {
 }
 
 
-/*
 # Create a SQL database instance
 resource "google_sql_database_instance" "default" {
   name             = "chadam-db-sql-mysql"
@@ -53,7 +52,6 @@ resource "google_sql_user" "users" {
   instance = google_sql_database_instance.default.name
   password = "password"
 }
-*/
 
 # Create bucket to store cloud function code 
 resource "google_storage_bucket" "cloud-function-bucket" {
