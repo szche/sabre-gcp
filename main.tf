@@ -1,11 +1,10 @@
 provider "google" {
-  project = "testsabregcp"
+  project = "testsabregcp8"
 }
-
 
 # Create a bucket to store PDF files
 resource "google_storage_bucket" "static" {
- name          = "chadam-sabre-gcp-bucket"
+ name          = "chadam-sabre-gcp-bucket-test"
  location      = "US"
  storage_class = "STANDARD"
  force_destroy = "true" 
@@ -21,6 +20,9 @@ resource "google_storage_bucket_iam_member" "member" {
   member   = "allUsers"
 }
 
+resource "google_project_service" "sqladmin_api" {
+  service = "sqladmin.googleapis.com"
+}
 
 # Create a SQL database instance
 resource "google_sql_database_instance" "default" {
@@ -28,6 +30,9 @@ resource "google_sql_database_instance" "default" {
   region           = "us-central1"
   database_version = "MYSQL_5_7"
   deletion_protection = "false"
+  depends_on = [
+    google_project_service.sqladmin_api
+  ]
 
   settings {
     tier = "db-f1-micro"
@@ -55,7 +60,7 @@ resource "google_sql_user" "users" {
 
 # Create bucket to store cloud function code 
 resource "google_storage_bucket" "cloud-function-bucket" {
- name          = "chadam-sabre-cloudcuntion-bucket"
+ name          = "chadam-sabre-cloudcuntion-bucket-test"
  location      = "US"
  storage_class = "STANDARD"
  uniform_bucket_level_access = true
@@ -92,10 +97,6 @@ resource "google_project_service" "gcp_resource_manager_api" {
 
 resource "google_project_service" "cloud_function_api" {
   service = "cloudfunctions.googleapis.com"
-  depends_on = [
-    google_project_service.gcp_resource_manager_api
-
-  ]
 }
 
 
